@@ -1,11 +1,14 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import dotenv from 'dotenv';
+
 import userModel from './userModel.js';
 import deniedProductModel from './deniedProductModel.js';
 import pickingModel from './pickingModel.js';
+import { pickingDeniedProductsModel } from './pickingDeniedProductsModel.js';
 
 dotenv.config();
 
+// Conexión a la base de datos
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -21,23 +24,23 @@ const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// Modelos
 db.User = userModel(sequelize, DataTypes);
 db.DeniedProduct = deniedProductModel(sequelize, DataTypes);
 db.Picking = pickingModel(sequelize, DataTypes);
+db.PickingDeniedProducts = pickingDeniedProductsModel(sequelize, DataTypes);
 
-// Relación muchos a muchos corregida entre Picking y DeniedProduct
+// Relaciones muchos a muchos (usando tabla intermedia)
 db.Picking.belongsToMany(db.DeniedProduct, {
-  through: 'PickingDeniedProducts',
-  foreignKey: 'origen',
-  otherKey: 'documentoOrigen',
+  through: db.PickingDeniedProducts,
+  foreignKey: 'pickingId',
+  otherKey: 'deniedProductId',
 });
 
 db.DeniedProduct.belongsToMany(db.Picking, {
-  through: 'PickingDeniedProducts',
-  foreignKey: 'documentoOrigen',
-  otherKey: 'origen',
+  through: db.PickingDeniedProducts,
+  foreignKey: 'deniedProductId',
+  otherKey: 'pickingId',
 });
 
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
 export default db;
