@@ -1,27 +1,12 @@
-// routes/users.js
-import { Router } from 'express';
-import { User } from '../models/index.js'; // Importa el objeto db
+import express from 'express';
+import userController from '../controllers/userController.js';
 
-const router = Router();
+const router = express.Router();
 
-// Endpoint para crear un nuevo usuario
-router.post('/users', async (req, res) => {
-  try {
-    const newUser = await User.create(req.body);
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Endpoint para obtener todos los usuarios
-router.get('/users', async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post('/', userController.createUser);
+router.get('/', userController.getUsers);
+router.get('/:id', userController.getUserById);
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
 
 export default router;
