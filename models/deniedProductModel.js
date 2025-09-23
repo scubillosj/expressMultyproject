@@ -58,11 +58,10 @@ export default (sequelize) => {
       field: 'Movimientos de Existencias/Cantidad Reservada',
     },
     // Columna: 'Documento Origen' (clave para la unión)
-    documentoOrigen: {
+    origen: {
       type: DataTypes.STRING(7),
       allowNull: false,
-      unique: true,
-      field: 'Documento Origen',
+      field: 'Origen',
     },
   }, {
     tableName: 'denied_products',

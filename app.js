@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import db from './models/index.js';   
-import pickingRoutes from './routes/pickingRoutes.js'; 
+//import pickingRoutes from './routes/pickingRoutes.js'; 
 import userRoutes from './routes/userRoutes.js'; 
 import deniedProductRoutes from './routes/deniedProductRoutes.js';
 
@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Monta las rutas de la API con un prefijo
-app.use('/api/picking', pickingRoutes);
+//app.use('/api/picking', pickingRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/denied-product', deniedProductRoutes);
 
