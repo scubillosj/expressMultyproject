@@ -1,12 +1,14 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
-import userModel from './userModel.js';
-import deniedProductModel from './deniedProductModel.js';
-import pickingModel from './pickingModel.js';
-import origenModel from './origenModel.js';
+
+import userModelDef from './userModel.js';
+import deniedProductModelDef from './deniedProductModel.js';
+import pickingModelDef from './pickingModel.js';
+import origenModelDef from './origenModel.js';
 
 dotenv.config();
 
+// Instancia Sequelize
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -18,33 +20,38 @@ const sequelize = new Sequelize(
   }
 );
 
-const db = {};
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
-db.User = userModel(sequelize, DataTypes);
-db.DeniedProduct = deniedProductModel(sequelize, DataTypes);
-db.Picking = pickingModel(sequelize, DataTypes);
-db.Origen = origenModel(sequelize, DataTypes);
+const User = userModelDef(sequelize);
+const DeniedProduct = deniedProductModelDef(sequelize);
+const Picking = pickingModelDef(sequelize);
+const Origen = origenModelDef(sequelize);
 
-db.Origen.hasMany(db.DeniedProduct, { 
-    foreignKey: 'origen', 
-    targetKey: 'origen' 
+
+
+Origen.hasMany(Picking, {
+  foreignKey: 'origen',   
+  sourceKey: 'origen',    
 });
 
-db.DeniedProduct.belongsTo(db.Origen, { 
-    foreignKey: 'origen', 
-    targetKey: 'origen' 
+Picking.belongsTo(Origen, {
+  foreignKey: 'origen',
+  targetKey: 'origen',
 });
 
-db.Origen.hasMany(db.Picking, { 
-    foreignKey: 'origen', 
-    targetKey: 'origen' 
+Origen.hasMany(DeniedProduct, {
+  foreignKey: 'origen',   
+  sourceKey: 'origen',    
 });
 
-db.Picking.belongsTo(db.Origen, { 
-    foreignKey: 'origen', 
-    targetKey: 'origen' 
+DeniedProduct.belongsTo(Origen, {
+  foreignKey: 'origen',
+  targetKey: 'origen',
 });
 
-export default db;
+export {
+  sequelize,
+  User,
+  DeniedProduct,
+  Picking,
+  Origen,
+};
