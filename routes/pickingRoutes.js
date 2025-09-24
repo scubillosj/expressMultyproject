@@ -1,29 +1,12 @@
-// routes/users.js
-import { Router } from 'express';
-import { Picking } from '../models/index.js'; // Importa el objeto db
+import express from 'express';
+import pickingController from '../controllers/pickingController.js';
 
-const router = Router();
+const router = express.Router();
 
-
-
-// Endpoint para crear un nuevo usuario
-router.post('/picking', async (req, res) => {
-  try {
-    const newpicking = await Picking.create(req.body);
-    res.status(201).json(newpicking);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Endpoint para obtener todos los usuarios
-router.get('/picking', async (req, res) => {
-  try {
-    const listpicking = await Picking.findAll();
-    res.status(200).json(listpicking);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post('/', pickingController.createPicking);
+router.get('/', pickingController.getPicking);
+router.get('/:id', pickingController.getPickingById);
+router.put('/:id', pickingController.updatePicking);
+router.delete('/:id', pickingController.deletePicking);
 
 export default router;

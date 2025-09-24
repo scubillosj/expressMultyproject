@@ -38,15 +38,16 @@ Picking.belongsTo(Origen, {
   targetKey: 'origen',
 });
 
-Origen.hasMany(DeniedProduct, {
-  foreignKey: 'origen',   
-  sourceKey: 'origen',    
+Origen.hasMany(Picking, {
+  foreignKey: 'origen',
+  sourceKey: 'origen',
 });
 
-DeniedProduct.belongsTo(Origen, {
+Picking.belongsTo(Origen, {
   foreignKey: 'origen',
   targetKey: 'origen',
 });
+
 
 export {
   sequelize,

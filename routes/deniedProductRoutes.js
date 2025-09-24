@@ -1,26 +1,12 @@
-// routes/users.js
-import { Router } from 'express';
-import { DeniedProduct } from '../models/index.js'; // Importa el objeto db
+import express from 'express';
+import deniedProductController from '../controllers/deniedProductController.js';
 
-const router = Router();
-// Endpoint para crear un nuevo usuario
-router.post('/diniedProduct', async (req, res) => {
-  try {
-    const newdiniedProduct = await DeniedProduct.create(req.body);
-    res.status(201).json(newdiniedProduct);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+const router = express.Router();
 
-// Endpoint para obtener todos los usuarios
-router.get('/diniedProduct', async (req, res) => {
-  try {
-    const listdiniedProduct = await DeniedProduct.findAll();
-    res.status(200).json(listdiniedProduct);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post('/', deniedProductController.createDeniedProduct);
+router.get('/', deniedProductController.getDeniedProducts);
+router.get('/:id', deniedProductController.getDeniedProductById);
+router.put('/:id', deniedProductController.updateDeniedProduct);
+router.delete('/:id', deniedProductController.deleteDeniedProduct);
 
 export default router;

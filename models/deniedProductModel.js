@@ -57,7 +57,6 @@ export default (sequelize) => {
       allowNull: false,
       field: 'Movimientos de Existencias/Cantidad Reservada',
     },
-    // Columna: 'Documento Origen' (clave para la unión)
     origen: {
       type: DataTypes.STRING(7),
       allowNull: false,

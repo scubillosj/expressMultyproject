@@ -1,10 +1,10 @@
-import { Picking } from '../models/index.js'; // La mejor práctica es importar el objeto `db`
+import { Picking } from '../models/index.js'; 
 
 const createPicking = async (data) => {
   return await Picking.create(data);
 };
 
-const getPickings = async () => {
+const getPicking = async () => {
   return await Picking.findAll();
 };
 
@@ -24,4 +24,4 @@ const deletePicking = async (id) => {
   return await picking.destroy();
 };
 
-export default { createPicking, getPickings, getPickingById, updatePicking, deletePicking };
+export default { createPicking, getPicking, getPickingById, updatePicking, deletePicking };
