@@ -1,12 +1,20 @@
-import express from 'express';
-import pickingController from '../controllers/pickingController.js';
+import { Router } from 'express';
+import {
+  createPicking,
+  getPicking,
+  getPickingById,
+  updatePicking,
+  deletePicking,
+  uploadPicking
+} from '../controllers/pickingController.js';
 
-const router = express.Router();
+const router = Router();
 
-router.post('/', pickingController.createPicking);
-router.get('/', pickingController.getPicking);
-router.get('/:id', pickingController.getPickingById);
-router.put('/:id', pickingController.updatePicking);
-router.delete('/:id', pickingController.deletePicking);
+router.post('/', createPicking);
+router.get('/', getPicking);
+router.get('/:id', getPickingById);
+router.put('/:id', updatePicking);
+router.delete('/:id', deletePicking);
+router.post('/upload', uploadPicking);
 
 export default router;

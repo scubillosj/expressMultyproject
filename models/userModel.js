@@ -1,29 +1,35 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes } from "sequelize";
+import { sequelize } from "../database.js";
 
-
-export default (sequelize) => {
-  const userModel = sequelize.define('User', {
+export const User = sequelize.define(
+  "User",
+  {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     username: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true,
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(120),
+      allowNull: false,
       unique: true,
-      allowNull: false
+      validate: {
+        isEmail: true,
+      },
     },
-    typeofUser: {
+    password: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-  }, {
-    tableName: 'users' 
-  });
+  },
+  {
+    timestamps: true, 
+    tableName: "users",
+  }
+);
 
-  return userModel;
-};

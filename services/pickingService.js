@@ -1,27 +1,54 @@
-import { Picking } from '../models/index.js'; 
+import PickingModel from '../models/pickingModel.js';
 
-const createPicking = async (data) => {
-  return await Picking.create(data);
-};
+class PickingService {
+    
+    async createPicking(data) {
+        return await PickingModel.create(data);
+    }
 
-const getPicking = async () => {
-  return await Picking.findAll();
-};
+    async getPicking() {
+        return await PickingModel.findAll();
+    }
 
-const getPickingById = async (id) => {
-  return await Picking.findByPk(id);
-};
+    async getPickingById(id) {
+        return await PickingModel.findByPk(id);
+    }
 
-const updatePicking = async (id, data) => {
-  const picking = await Picking.findByPk(id);
-  if (!picking) throw new Error('Picking no encontrado');
-  return await picking.update(data);
-};
+    async updatePicking(id, data) {
+        const picking = await PickingModel.findByPk(id);
+        if (!picking) throw new Error("Registro de picking no encontrado");
 
-const deletePicking = async (id) => {
-  const picking = await Picking.findByPk(id);
-  if (!picking) throw new Error('Picking no encontrado');
-  return await picking.destroy();
-};
+        await picking.update(data);
+        return picking;
+    }
 
-export default { createPicking, getPicking, getPickingById, updatePicking, deletePicking };
+    async deletePicking(id) {
+        const picking = await PickingModel.findByPk(id);
+        if (!picking) throw new Error("Registro de picking no encontrado");
+
+        await picking.destroy();
+        return true;
+    }
+
+    // 🟢 CARGA MASIVA – tu caso principal
+    async uploadPicking(datos) {
+
+        if (!Array.isArray(datos)) {
+            throw new Error("Se esperaba una lista de registros JSON.");
+        }
+
+        // Aquí puedes agregar validaciones extra si deseas
+        // pero como dijiste, ya vendrán limpios desde Streamlit
+
+        await PickingModel.bulkCreate(datos);
+
+        return {
+            status: "ok",
+            filas_guardadas: datos.length,
+            mensaje: "Datos procesados y guardados con éxito.",
+            resumen_procesado: datos
+        };
+    }
+}
+
+export default new PickingService();

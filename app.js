@@ -5,9 +5,9 @@ import morgan from 'morgan';
  
 
 import pickingRoutes from './routes/pickingRoutes.js'; 
-import userRoutes from './routes/userRoutes.js'; 
+import authRoutes from './routes/authRoutes.js'; 
 import deniedProductRoutes from './routes/deniedProductRoutes.js';
-import origenRoutes from './routes/origenRoutes.js';
+import corteRoutes from './routes/corteRoutes.js';
 
 // Carga las variables de entorno desde el archivo .env
 dotenv.config();
@@ -22,9 +22,9 @@ app.use(morgan('dev'));
 
 // Monta las rutas de la API con un prefijo
 app.use('/api/picking', pickingRoutes);
-app.use('/api/user', userRoutes);
+app.use('/auth', authRoutes);
 app.use('/api/denied-product', deniedProductRoutes);
-app.use('/api/origen', origenRoutes);
+app.use('/api/corte', corteRoutes);
 
 // Sincroniza los modelos con la base de datos y luego inicia el servidor
 sequelize.sync({ force: false })

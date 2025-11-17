@@ -1,57 +1,134 @@
-import deniedProductService from '../services/deniedProductService.js';
+import { ProductoNegado } from "../models/index.js";
+import { Op } from "sequelize";
 
-const createDeniedProduct = async (req, res) => {
+// GET /api/producto-negado
+export const listarProductoNegado = async (req, res) => {
   try {
-    const deniedProduct = await deniedProductService.createDeniedProduct(req.body);
-    res.status(201).json(deniedProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
+    const {
+      marca,
+      fecha,
+      search,
+      ordering = "-fecha"
+    } = req.query;
 
-const getDeniedProducts = async (req, res) => {
-  try {
-    const deniedProducts = await deniedProductService.getDeniedProducts();
-    res.json(deniedProducts);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    let where = {};
 
-const getDeniedProductById = async (req, res) => {
-  try {
-    const deniedProduct = await deniedProductService.getDeniedProductById(req.params.id);
-    if (!deniedProduct) {
-      return res.status(404).json({ message: 'DeniedProduct no encontrado' });
+    if (marca) where.marca = marca;
+    if (fecha) where.fecha = fecha;
+
+    if (search) {
+      where[Op.or] = [
+        { producto: { [Op.iLike]: `%${search}%` } },
+        { origen: { [Op.iLike]: `%${search}%` } }
+      ];
     }
-    res.json(deniedProduct);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    const order = ordering.startsWith("-")
+      ? [[ordering.substring(1), "DESC"]]
+      : [[ordering, "ASC"]];
+
+    const data = await ProductoNegado.findAll({
+      where,
+      order
+    });
+
+    return res.json(data);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const updateDeniedProduct = async (req, res) => {
+// POST (create)
+export const crearProductoNegado = async (req, res) => {
   try {
-    const updated = await deniedProductService.updateDeniedProduct(req.params.id, req.body);
-    res.json(updated);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+    const nuevo = await ProductoNegado.create(req.body);
+    return res.status(201).json(nuevo);
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ error: "Datos inválidos" });
   }
 };
 
-const deleteDeniedProduct = async (req, res) => {
+// GET por ID
+export const obtenerProductoNegado = async (req, res) => {
   try {
-    await deniedProductService.deleteDeniedProduct(req.params.id);
-    res.json({ message: 'DeniedProduct eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const dato = await ProductoNegado.findByPk(req.params.id);
+    if (!dato) return res.status(404).json({ error: "Registro no encontrado" });
+    return res.json(dato);
+  } catch {
+    return res.status(500).json({ error: "Error interno" });
   }
 };
 
-export default {
-  createDeniedProduct,
-  getDeniedProducts,
-  getDeniedProductById,
-  updateDeniedProduct,
-  deleteDeniedProduct
+// PATCH / PUT
+export const actualizarProductoNegado = async (req, res) => {
+  try {
+    const [updated] = await ProductoNegado.update(req.body, {
+      where: { id: req.params.id },
+    });
+
+    if (updated === 0) return res.status(404).json({ error: "No encontrado" });
+
+    const actualizado = await ProductoNegado.findByPk(req.params.id);
+    return res.json(actualizado);
+
+  } catch (err) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+};
+
+// DELETE
+export const eliminarProductoNegado = async (req, res) => {
+  try {
+    const deleted = await ProductoNegado.destroy({
+      where: { id: req.params.id }
+    });
+
+    if (!deleted) return res.status(404).json({ error: "No encontrado" });
+
+    return res.json({ message: "Eliminado" });
+
+  } catch {
+    return res.status(500).json({ error: "Error interno" });
+  }
+};
+
+
+export const uploadExcelProductoNegado = async (req, res) => {
+    try {
+        const datosCrudos = req.body;
+
+        if (!Array.isArray(datosCrudos)) {
+            return res.status(400).json({
+                error: "Se esperaba una lista de registros JSON."
+            });
+        }
+
+        const registrosLimpios = datosCrudos.map(reg => ({
+            fecha: reg.fecha,
+            producto: reg.producto,
+            marca: reg.marca,
+            cantidad_negada: reg.cantidad_negada,
+            origen: reg.origen,
+            referencia: reg.referencia
+        }));
+
+        await ProductoNegado.bulkCreate(registrosLimpios);
+
+        return res.status(201).json({
+            status: "ok",
+            filas_guardadas: registrosLimpios.length,
+            mensaje: "Datos procesados y guardados con éxito.",
+            resumen_procesado: registrosLimpios
+        });
+
+    } catch (error) {
+        console.error("Error en carga de producto negado:", error);
+        return res.status(500).json({
+            status: "error",
+            detalle: `Error interno en el procesamiento: ${error.message}`
+        });
+    }
 };

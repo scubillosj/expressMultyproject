@@ -1,12 +1,22 @@
-import express from 'express';
-import deniedProductController from '../controllers/deniedProductController.js';
+import { Router } from "express";
+import { auth } from "../middleware/auth.js";
+import {
+  listarProductoNegado,
+  crearProductoNegado,
+  obtenerProductoNegado,
+  actualizarProductoNegado,
+  eliminarProductoNegado,
+  uploadExcelProductoNegado
+} from "../controllers/deniedProductController.js";
 
-const router = express.Router();
+const router = Router();
 
-router.post('/', deniedProductController.createDeniedProduct);
-router.get('/', deniedProductController.getDeniedProducts);
-router.get('/:id', deniedProductController.getDeniedProductById);
-router.put('/:id', deniedProductController.updateDeniedProduct);
-router.delete('/:id', deniedProductController.deleteDeniedProduct);
+router.get("/", auth, listarProductoNegado);
+router.post("/", auth, crearProductoNegado);
+router.get("/:id", auth, obtenerProductoNegado);
+router.patch("/:id", auth, actualizarProductoNegado);
+router.delete("/:id", auth, eliminarProductoNegado);
+router.post("/upload", auth, uploadExcelProductoNegado);
+
 
 export default router;

@@ -1,58 +1,42 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-import userModelDef from './userModel.js';
-import deniedProductModelDef from './deniedProductModel.js';
-import pickingModelDef from './pickingModel.js';
-import origenModelDef from './origenModel.js';
+import userModelDef from "./userModel.js";
+import deniedProductDef from "./deniedProductModel.js";
+import pickingModelDef from "./pickingModel.js";
+import cortesModelDef from "./cortesLogisticoModel.js";
 
 dotenv.config();
 
-// Instancia Sequelize
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    logging: false,
-  }
-);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "postgres",
+  protocol: "postgres",
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: false, 
+    },
+  },
+});
 
-
+// MODELOS
 const User = userModelDef(sequelize);
-const DeniedProduct = deniedProductModelDef(sequelize);
+const ProductoNegado = deniedProductDef(sequelize);
 const Picking = pickingModelDef(sequelize);
-const Origen = origenModelDef(sequelize);
+const CortesLogistico = cortesModelDef(sequelize);
 
-
-
-Origen.hasMany(Picking, {
-  foreignKey: 'origen',   
-  sourceKey: 'origen',    
+// RELACIONES
+CortesLogistico.hasMany(Picking, {
+  foreignKey: "nombrecorte",
 });
-
-Picking.belongsTo(Origen, {
-  foreignKey: 'origen',
-  targetKey: 'origen',
+Picking.belongsTo(CortesLogistico, {
+  foreignKey: "nombrecorte",
 });
-
-Origen.hasMany(Picking, {
-  foreignKey: 'origen',
-  sourceKey: 'origen',
-});
-
-Picking.belongsTo(Origen, {
-  foreignKey: 'origen',
-  targetKey: 'origen',
-});
-
 
 export {
   sequelize,
   User,
-  DeniedProduct,
+  ProductoNegado,
   Picking,
-  Origen,
+  CortesLogistico,
 };
