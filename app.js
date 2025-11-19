@@ -30,7 +30,6 @@ app.use('/api/corte', corteRoutes);
 sequelize.sync({ force: false })
     .then(() => {
         console.log('Base de datos conectada y sincronizada correctamente.');
-        // Inicia el servidor solo si la conexión es exitosa
         app.listen(PORT, () => {
             console.log(`Servidor corriendo en el puerto http://localhost:${PORT}`);
         });

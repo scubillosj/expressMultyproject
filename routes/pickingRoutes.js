@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { auth } from "../middlewares/authMiddleware.js";
 import {
   createPicking,
   getPicking,
@@ -10,11 +11,11 @@ import {
 
 const router = Router();
 
-router.post('/', createPicking);
-router.get('/', getPicking);
-router.get('/:id', getPickingById);
-router.put('/:id', updatePicking);
-router.delete('/:id', deletePicking);
-router.post('/upload', uploadPicking);
+router.post('/', auth, createPicking);
+router.get('/', auth, getPicking);
+router.get('/:id', auth, getPickingById);
+router.put('/:id', auth,updatePicking);
+router.delete('/:id', auth, deletePicking);
+router.post('/upload', auth, uploadPicking);
 
 export default router;

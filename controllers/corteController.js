@@ -1,4 +1,4 @@
-import corteService from "../services/corteService.js";
+import   corteService  from "../services/corteService.js";
 
 export const createCorte = async (req, res) => {
   try {

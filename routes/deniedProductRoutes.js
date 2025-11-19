@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth } from "../middleware/auth.js";
+import { auth } from "../middlewares/authMiddleware.js";
 import {
   listarProductoNegado,
   crearProductoNegado,

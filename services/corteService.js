@@ -1,6 +1,6 @@
-import CortesLogistico from "../models/corte.model.js";
+import { CortesLogistico } from "../models/index.js";
 
-class CorteService {
+class corteService {
   async createCorte(data) {
     return await CortesLogistico.create(data);
   }
@@ -32,4 +32,4 @@ class CorteService {
   }
 }
 
-export default new CorteService();
+export default new corteService();

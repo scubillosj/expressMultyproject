@@ -1,12 +1,13 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+import path from "path";
 
 import userModelDef from "./userModel.js";
 import deniedProductDef from "./deniedProductModel.js";
 import pickingModelDef from "./pickingModel.js";
 import cortesModelDef from "./cortesLogisticoModel.js";
 
-dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), "..", ".env") });
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
@@ -14,29 +15,27 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   logging: false,
   dialectOptions: {
     ssl: {
-      require: false, 
+      require: true,
+      rejectUnauthorized: false,
     },
   },
 });
 
-// MODELOS
+// MODELOS INSTANCIADOS
 const User = userModelDef(sequelize);
 const ProductoNegado = deniedProductDef(sequelize);
 const Picking = pickingModelDef(sequelize);
 const CortesLogistico = cortesModelDef(sequelize);
 
 // RELACIONES
-CortesLogistico.hasMany(Picking, {
-  foreignKey: "nombrecorte",
-});
-Picking.belongsTo(CortesLogistico, {
-  foreignKey: "nombrecorte",
-});
+CortesLogistico.hasMany(Picking, { foreignKey: "nombrecorte" });
+Picking.belongsTo(CortesLogistico, { foreignKey: "nombrecorte" });
 
+// EXPORTAR TODO CORRECTAMENTE
 export {
   sequelize,
   User,
   ProductoNegado,
   Picking,
-  CortesLogistico,
+  CortesLogistico, 
 };

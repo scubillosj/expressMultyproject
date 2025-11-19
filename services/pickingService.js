@@ -1,21 +1,21 @@
-import PickingModel from '../models/pickingModel.js';
+import { Picking }  from '../models/index.js';
 
-class PickingService {
+class pickingService {
     
     async createPicking(data) {
-        return await PickingModel.create(data);
+        return await Picking.create(data);
     }
 
     async getPicking() {
-        return await PickingModel.findAll();
+        return await Picking.findAll();
     }
 
     async getPickingById(id) {
-        return await PickingModel.findByPk(id);
+        return await Picking.findByPk(id);
     }
 
     async updatePicking(id, data) {
-        const picking = await PickingModel.findByPk(id);
+        const picking = await Picking.findByPk(id);
         if (!picking) throw new Error("Registro de picking no encontrado");
 
         await picking.update(data);
@@ -23,7 +23,7 @@ class PickingService {
     }
 
     async deletePicking(id) {
-        const picking = await PickingModel.findByPk(id);
+        const picking = await Picking.findByPk(id);
         if (!picking) throw new Error("Registro de picking no encontrado");
 
         await picking.destroy();
@@ -40,7 +40,7 @@ class PickingService {
         // Aquí puedes agregar validaciones extra si deseas
         // pero como dijiste, ya vendrán limpios desde Streamlit
 
-        await PickingModel.bulkCreate(datos);
+        await Picking.bulkCreate(datos);
 
         return {
             status: "ok",
@@ -51,4 +51,4 @@ class PickingService {
     }
 }
 
-export default new PickingService();
+export default new pickingService();
