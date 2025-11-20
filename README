@@ -1,0 +1,126 @@
+Este proyecto es un backend en Node.js que expone varias rutas protegidas (auth, picking, cortes, productos negados) utilizando Express.
+Utiliza Sequelize para la persistencia con PostgreSQL, y Swagger UI para documentar la API.
+Está pensado para integrarse con un frontend tipo Streamlit, permitiendo autenticación JWT y operación de CRUD + cargas de archivo (Excel) en algunos endpoints.
+
+📂 Estructura del proyecto
+├─ config/
+│   └─ swagger.js           // Configuración de Swagger
+├─ controllers/
+│   └─ authController.js
+│   └─ pickingController.js
+│   └─ corteController.js
+│   └─ deniedProductController.js
+├─ middlewares/
+│   └─ authMiddleware.js
+├─ models/
+│   └─ index.js             // Inicialización de Sequelize y modelos
+│   └─ userModel.js
+│   └─ pickingModel.js
+│   └─ corteLogisticoModel.js
+│   └─ deniedProductModel.js
+├─ routes/
+│   └─ authRoutes.js
+│   └─ pickingRoutes.js
+│   └─ corteRoutes.js
+│   └─ deniedProductRoutes.js
+├─ services/
+│   └─ authService.js
+│   └─ pickingService.js
+│   └─ corteService.js
+│   └─ deniedProductService.js
+├─ app.js                   // Punto de entrada del servidor
+├─ .env                     // Variables de entorno (no subir al repositorio)
+└─ package.json
+
+🔧 Tecnologías utilizadas
+
+Node.js
+
+Express
+
+Sequelize (ORM)
+
+PostgreSQL
+
+JWT (jsonwebtoken) para autenticación
+
+bcrypt para hash de contraseñas
+
+Swagger UI (swagger-jsdoc + swagger-ui-express) para documentación de API
+
+Morgan para logging de peticiones
+
+dotenv para manejo de configuraciones de entorno
+
+🚀 Instalación y ejecución
+
+Clona el repositorio
+
+git clone https://github.com/scubillosj/expressMultyproject.git
+cd expressMultyproject
+
+
+Instala dependencias
+
+npm install
+
+
+Configura variables de entorno
+Crea un archivo .env con al menos:
+
+DATABASE_URL=postgresql://user:password@host:port/db
+JWT_SECRET=tuSecreto
+JWT_REFRESH_SECRET=tuSecretoRefresh
+
+
+Ejecuta el servidor
+
+npm start
+
+
+O para desarrollo con reinicio automático:
+
+npm install --save-dev nodemon
+npm run dev
+
+
+Abre Swagger UI en el navegador
+
+http://localhost:3000/api-docs
+
+🔐 Autenticación
+
+Los endpoints protegidos requieren un token JWT que se obtiene al hacer POST /auth/login.
+El token debe enviarse en el header:
+
+Authorization: Bearer <tu_token>
+
+📋 Principales endpoints
+
+POST /auth/register – Crear un nuevo usuario
+
+POST /auth/login – Login y obtención de tokens
+
+GET /api/picking – Listado de pickings filtrables
+
+POST /api/picking – Crear nuevo registro de picking
+
+POST /api/picking/upload – Subir Excel de picking
+
+GET /api/corte – Listado de cortes
+
+POST /api/corte – Crear nuevo corte
+
+GET /api/denied-product – Listado de productos negados
+
+… y otros: ver Swagger UI para todos
+
+⚠️ Consideraciones
+
+Al sincronizar los modelos con PostgreSQL, asegúrate que la tabla correspondiente tenga los campos esperados (atributos de modelo).
+
+Por defecto sequelize.sync({ force: false }) está configurado para no eliminar datos existentes — ajusta según requieras.
+
+Las rutas de carga de archivo (upload) requieren campos multipart/form-data. Asegúrate de que el cliente los envíe correctamente.
+
+Asegúrate que el cliente (por ejemplo Streamlit) utilice los headers correctos para autenticación.
