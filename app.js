@@ -1,16 +1,22 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import  { sequelize} from './models/index.js';  
+import path from 'path';
+import { sequelize } from './models/index.js'; 
 import morgan from 'morgan';
- 
 
 import pickingRoutes from './routes/pickingRoutes.js'; 
 import authRoutes from './routes/authRoutes.js'; 
 import deniedProductRoutes from './routes/deniedProductRoutes.js';
 import corteRoutes from './routes/corteRoutes.js';
 
+// Documentación
+import { swaggerSpec, swaggerServe, swaggerSetup } from "./config/swagger.js"; 
+
 // Carga las variables de entorno desde el archivo .env
-dotenv.config();
+dotenv.config({
+    // Corregí la ruta para buscar en la raíz de APIMULTY (tu directorio actual de ejecución)
+    path: path.resolve(process.cwd(), '.env')
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +24,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware para procesar JSON en las peticiones y morgan para informacion de peticiones
 app.use(express.json());
 app.use(morgan('dev'));
+
+// ✅ Middleware para Swagger (usando las importaciones renombradas)
+app.use("/api-docs", swaggerServe, swaggerSetup(swaggerSpec));
 
 
 // Monta las rutas de la API con un prefijo

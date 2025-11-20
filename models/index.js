@@ -7,7 +7,12 @@ import deniedProductDef from "./deniedProductModel.js";
 import pickingModelDef from "./pickingModel.js";
 import cortesModelDef from "./cortesLogisticoModel.js";
 
-dotenv.config({ path: path.resolve(process.cwd(), "..", ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+dotenv.config({
+  path: path.resolve(process.cwd(), '.env')
+});
+
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",

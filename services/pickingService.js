@@ -6,9 +6,13 @@ class pickingService {
         return await Picking.create(data);
     }
 
-    async getPicking() {
-        return await Picking.findAll();
+    async getPicking(filtros = {}) {
+    return await Picking.findAll({
+      where: filtros,
+      order: [['fechaFactura', 'DESC']]
+    });
     }
+
 
     async getPickingById(id) {
         return await Picking.findByPk(id);
